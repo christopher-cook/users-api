@@ -26,7 +26,6 @@ public class UserController {
 //  @PreAuthorize("hasRole('ROLE_ADMIN')")
   @GetMapping("/list")
   public Iterable<User> listUsers(@RequestHeader("userId") String userId) {
-    System.out.println(userId);
     return userService.listUsers();
   }
 
