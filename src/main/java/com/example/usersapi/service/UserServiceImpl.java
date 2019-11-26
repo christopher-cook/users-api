@@ -5,7 +5,6 @@ import com.example.usersapi.exception.LoginException;
 import com.example.usersapi.exception.UserExistsException;
 import com.example.usersapi.model.JwtResponse;
 import com.example.usersapi.model.User;
-import com.example.usersapi.model.UserRole;
 import com.example.usersapi.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -18,9 +17,6 @@ public class UserServiceImpl implements UserService {
 
   @Autowired
   UserRepository userRepository;
-
-  @Autowired
-  UserRoleService userRoleService;
 
   @Bean
   public PasswordEncoder encoder() {
@@ -41,6 +37,7 @@ public class UserServiceImpl implements UserService {
 
 //    UserRole userRole = userRoleService.getRole(user.getUserRole().getName());;
 //    user.setUserRole(userRole);
+
     user.setPassword(encoder().encode(user.getPassword()));
     User savedUser = null;
     try {
