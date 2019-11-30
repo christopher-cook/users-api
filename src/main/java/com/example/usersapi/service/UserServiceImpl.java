@@ -1,12 +1,13 @@
 package com.example.usersapi.service;
 
 import com.example.usersapi.config.JwtUtil;
+import com.example.usersapi.exception.InvalidSignupException;
 import com.example.usersapi.exception.LoginException;
-import com.example.usersapi.exception.UserExistsException;
 import com.example.usersapi.model.JwtResponse;
 import com.example.usersapi.model.User;
 import com.example.usersapi.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -18,10 +19,9 @@ public class UserServiceImpl implements UserService {
   @Autowired
   UserRepository userRepository;
 
-  @Bean
-  public PasswordEncoder encoder() {
-    return new BCryptPasswordEncoder();
-  }
+  @Autowired
+  @Qualifier("encoder")
+  PasswordEncoder bCryptPasswordEncoder;
 
   @Autowired
   JwtUtil jwtUtil;
@@ -32,40 +32,49 @@ public class UserServiceImpl implements UserService {
   }
 
   @Override
-  public JwtResponse createUser(User user) throws UserExistsException {
-//  TODO:  uncomment this to add user roles later and in the user entity
+  public JwtResponse createUser(User user) throws InvalidSignupException {
+    String username = user.getUsername();
+    String email = user.getEmail();
+    if (username == null || username == "") {
+      throw new InvalidSignupException("Username cannot be blank");
+    } else if (email == null || email == "") {
+      throw new InvalidSignupException("Email cannot be blank");
+    }
 
-//    UserRole userRole = userRoleService.getRole(user.getUserRole().getName());;
-//    user.setUserRole(userRole);
+    User existingUsername = userRepository.findByUsername(username);
+    User existingEmail = userRepository.findByEmail(email);
 
-    user.setPassword(encoder().encode(user.getPassword()));
+    if (existingUsername != null) {
+      throw new InvalidSignupException("User already exists");
+    }
+    if (existingEmail != null) {
+      throw new InvalidSignupException("Email already exists");
+    }
+
+    user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
     User savedUser = null;
+
     try {
       savedUser = userRepository.save(user);
     } catch (Exception e){
-      throw new UserExistsException("User already exists");
+      throw new InvalidSignupException("User cannot be created ");
     }
     if (savedUser != null) {
       String token = jwtUtil.generateToken(savedUser.getUsername());
       return new JwtResponse(token, savedUser.getUsername());
 
     }
-    throw new UserExistsException("User already exists");
+    throw new InvalidSignupException("User cannot be created");
   }
 
   @Override
   public JwtResponse login(User user) throws LoginException {
     User foundUser = userRepository.login(user.getEmail());
-    if (foundUser != null && encoder().matches(user.getPassword(), foundUser.getPassword())) {
+    if (foundUser != null && bCryptPasswordEncoder.matches(user.getPassword(), foundUser.getPassword())) {
       String token = jwtUtil.generateToken(foundUser.getUsername());
       return new JwtResponse(token, foundUser.getUsername());
     }
     throw new LoginException("Email/Password invalid!");
-  }
-
-  @Override
-  public User getUserByUsername(String username) {
-    return userRepository.findByUsername(username);
   }
 
 }

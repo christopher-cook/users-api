@@ -1,10 +1,12 @@
 package com.example.usersapi.controller;
 
+import com.example.usersapi.exception.InvalidSignupException;
 import com.example.usersapi.exception.LoginException;
-import com.example.usersapi.exception.UserExistsException;
 import com.example.usersapi.model.JwtResponse;
 import com.example.usersapi.model.User;
 import com.example.usersapi.service.UserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 //import org.springframework.security.access.prepost.PreAuthorize;
@@ -20,22 +22,26 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class UserController {
 
+  Logger logger = LoggerFactory.getLogger(UserController.class);
+
   @Autowired
   UserService userService;
 
-//  @PreAuthorize("hasRole('ROLE_ADMIN')")
   @GetMapping("/list")
   public Iterable<User> listUsers(@RequestHeader("userId") String userId) {
+    logger.warn("users-api: retrieving users list");
     return userService.listUsers();
   }
 
   @PostMapping("/signup")
-  public ResponseEntity<?> createUser(@RequestBody User user) throws UserExistsException {
+  public ResponseEntity<?> createUser(@RequestBody User user) throws InvalidSignupException {
+    logger.warn("users-api: signing up user");
     return ResponseEntity.ok(userService.createUser(user));
   }
 
   @PostMapping("/login")
   public ResponseEntity<?> login(@RequestBody User user) throws LoginException {
+    logger.warn("users-api: logging in user");
     return ResponseEntity.ok(userService.login(user));
   }
 }

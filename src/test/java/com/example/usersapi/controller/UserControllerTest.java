@@ -5,13 +5,11 @@ import com.example.usersapi.model.JwtResponse;
 import com.example.usersapi.model.User;
 import com.example.usersapi.service.UserService;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpServletRequest;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.junit.runner.RunWith;
@@ -64,19 +62,20 @@ public class UserControllerTest {
   @Test
   public void login_Returns200_Success() throws Exception {
 
-    JwtResponse jwtResponse = new JwtResponse("123456", "batman");
+    JwtResponse jwtResponse = new JwtResponse("123456", "test");
 
     RequestBuilder requestBuilder = MockMvcRequestBuilders
         .post("/login")
         .contentType(MediaType.APPLICATION_JSON)
-        .content(createUserInJson("batman","robin"));
+        .content(createUserInJson("test@test.com", "test","test"));
 
     when(userService.login(any())).thenReturn(jwtResponse);
 
     MvcResult result = mockMvc.perform(requestBuilder)
         .andExpect(status().isOk())
-        .andExpect(content().json("{\"token\":\"123456\"}"))
+        .andExpect(content().json("{\"token\":\"123456\",\"username\":\"test\"}"))
         .andReturn();
+
 
     System.out.println(result.getResponse().getContentAsString());
   }
@@ -84,27 +83,27 @@ public class UserControllerTest {
 
   @Test
   public void signup_Returns200_Success() throws Exception {
-    JwtResponse jwtResponse = new JwtResponse("123456", "batman");
+    JwtResponse jwtResponse = new JwtResponse("123456", "test");
 
     RequestBuilder requestBuilder = MockMvcRequestBuilders
         .post("/signup")
         .contentType(MediaType.APPLICATION_JSON)
-        .content(createUserInJson("batman","robin"));
+        .content(createUserInJson("test@test.com", "test","test"));
 
     when(userService.createUser(any())).thenReturn(jwtResponse);
 
     MvcResult result = mockMvc.perform(requestBuilder)
         .andExpect(status().isOk())
-        .andExpect(content().json("{\"token\":\"123456\"}"))
+        .andExpect(content().json("{\"token\":\"123456\",\"username\":\"test\"}"))
         .andReturn();
 
     System.out.println(result.getResponse().getContentAsString());
   }
 
-  private static String createUserInJson (String name, String password) {
-    return "{ \"name\": \"" + name + "\", " +
-        "\"password\":\"" + password + "\"}";
+  private static String createUserInJson (String email, String username, String password) {
+    return "{ \"email\": \"" + email + "\", " +
+        "\"username\":\"" + username + "\"," +
+        "\"password\": \"" + password + "\"}";
   }
-
 
 }

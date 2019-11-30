@@ -3,6 +3,9 @@ package com.example.usersapi.config;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import java.io.Serializable;
@@ -17,6 +20,11 @@ public class JwtUtil implements Serializable {
 
   @Value("${jwt.secret}")
   private String secret;
+
+  @Bean
+  public PasswordEncoder encoder() {
+    return new BCryptPasswordEncoder();
+  }
 
   public String generateToken(String username) {
     Map<String, Object> claims = new HashMap<>();

@@ -19,7 +19,6 @@ public class UserProfileController {
     @GetMapping("/profile")
     public UserProfile getUserProfile(@RequestHeader("userId") Long userId){
         return userProfileService.getProfile(userId);
-
     }
 
 }

@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 
 
 @JsonIdentityInfo(
@@ -19,13 +20,16 @@ public class User {
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
+  @NotBlank
   @Column(unique=true)
   private String email;
 
+  @NotBlank
   @Column(unique=true)
   private String username;
 
   @Column
+  @NotBlank
   private String password;
 
 

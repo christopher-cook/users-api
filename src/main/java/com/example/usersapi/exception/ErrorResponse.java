@@ -9,7 +9,6 @@ public class ErrorResponse {
 
     private HttpStatus httpStatus;
     private String message;
-    private String cause;
     private String timestamp;
 
     public HttpStatus getHttpStatus() {
@@ -28,30 +27,12 @@ public class ErrorResponse {
         this.message = message;
     }
 
-    public String getCause() {
-        return cause;
-    }
-
-    public void setCause(String cause) {
-        this.cause = cause;
-    }
-
     public String getTimestamp() {
         return timestamp;
     }
 
     public void setTimestamp(String timestamp) {
         this.timestamp = timestamp;
-    }
-
-    public ErrorResponse(HttpStatus httpStatus, String message, String cause) {
-        super();
-        this.httpStatus = httpStatus;
-        this.message = message;
-        this.cause = cause;
-
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
-        this.timestamp = LocalDateTime.now().format(formatter);
     }
 
     public ErrorResponse(HttpStatus httpStatus, String message) {

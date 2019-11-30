@@ -1,6 +1,7 @@
 package com.example.usersapi.repository;
 
 import com.example.usersapi.model.User;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Repository;
@@ -9,6 +10,6 @@ import org.springframework.stereotype.Repository;
 public interface UserRepository extends CrudRepository<User, Long> {
   @Query("FROM User u WHERE u.email = ?1")
   public User login(String email);
-
+  public User findByEmail(String email);
   public User findByUsername(String username);
 }
