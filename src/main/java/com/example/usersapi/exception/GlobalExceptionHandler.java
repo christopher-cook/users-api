@@ -20,7 +20,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler({EntityNotFoundException.class, LoginException.class})
+    @ExceptionHandler({LoginException.class, InvalidSignupException.class})
     public ResponseEntity<ErrorResponse> handleLoginExceptions(Exception e) {
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR,
                 e.getMessage());

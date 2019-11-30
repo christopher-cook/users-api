@@ -6,6 +6,8 @@ import com.example.usersapi.exception.LoginException;
 import com.example.usersapi.model.JwtResponse;
 import com.example.usersapi.model.User;
 import com.example.usersapi.repository.UserRepository;
+import java.util.ArrayList;
+import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -60,16 +62,35 @@ public class UserServiceTest {
     assertEquals(jwtResponse.getToken(), "123456");
   }
 
+  @Test(expected = InvalidSignupException.class)
+  public void createUser_User_Fail() throws InvalidSignupException {
+    userService.createUser(user);
+  }
+
   @Test
   public void loginUser_User_Success() throws LoginException {
 
     when(userRepository.login(anyString())).thenReturn(user);
     when(encoder.matches(any(), any())).thenReturn(true);
     when(jwtUtil.generateToken(any())).thenReturn("123456");
-
     JwtResponse jwtResponse = userService.login(user);
 
     assertEquals(jwtResponse.getToken(), "123456");
+  }
+
+  @Test(expected = LoginException.class)
+  public void loginUser_User_Fail() throws LoginException {
+    userService.login(user);
+  }
+
+  @Test
+  public void listUsers_Users_Success() {
+    List<User> listUsers = new ArrayList<>();
+    listUsers.add(user);
+    when(userRepository.findAll()).thenReturn(listUsers);
+    Iterable<User> foundList = userService.listUsers();
+
+    assertEquals(listUsers, foundList);
   }
 
 }
