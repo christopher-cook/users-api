@@ -34,13 +34,18 @@ public class SignUpAndLoginTest {
   @Autowired
   UserRepository userRepository;
 
+  private User createUser() {
+    User user = new User();
+    user.setUsername("test1");
+    user.setPassword("test1");
+    user.setEmail("test1@test.com");
+    return user;
+  }
+
   @Test
   public void a_signup_User_Success() throws Exception {
 
-    User user = new User();
-    user.setUsername("test");
-    user.setPassword("test");
-    user.setEmail("test@test.com");
+    User user = createUser();
 
     RequestBuilder requestBuilder = MockMvcRequestBuilders
         .post("/signup")
@@ -58,10 +63,7 @@ public class SignUpAndLoginTest {
   @Test
   public void b_login_User_Success() throws Exception {
 
-    User user = new User();
-    user.setUsername("test");
-    user.setPassword("test");
-    user.setEmail("test@test.com");
+    User user = createUser();
 
     RequestBuilder requestBuilder = MockMvcRequestBuilders
         .post("/login")
