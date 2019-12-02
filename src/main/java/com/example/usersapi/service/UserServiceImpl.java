@@ -6,6 +6,8 @@ import com.example.usersapi.exception.LoginException;
 import com.example.usersapi.model.JwtResponse;
 import com.example.usersapi.model.User;
 import com.example.usersapi.repository.UserRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,6 +26,8 @@ public class UserServiceImpl implements UserService {
   @Autowired
   JwtUtil jwtUtil;
 
+  Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
+
   @Override
   public Iterable<User> listUsers() {
     return userRepository.findAll();
@@ -34,8 +38,10 @@ public class UserServiceImpl implements UserService {
     String username = user.getUsername();
     String email = user.getEmail();
     if (username == null || username == "") {
+      logger.warn("users_api_error: Username cannot be blank");
       throw new InvalidSignupException("Username cannot be blank");
     } else if (email == null || email == "") {
+      logger.warn("users_api_error: Email cannot be blank");
       throw new InvalidSignupException("Email cannot be blank");
     }
 
@@ -43,9 +49,11 @@ public class UserServiceImpl implements UserService {
     User existingEmail = userRepository.findByEmail(email);
 
     if (existingUsername != null) {
+      logger.warn("users_api_error: Username already exists-" + existingUsername.getUsername());
       throw new InvalidSignupException("User already exists");
     }
     if (existingEmail != null) {
+      logger.warn("users_api_error: Email already exists-" + existingEmail.getEmail());
       throw new InvalidSignupException("Email already exists");
     }
 
@@ -55,13 +63,14 @@ public class UserServiceImpl implements UserService {
     try {
       savedUser = userRepository.save(user);
     } catch (Exception e){
+      logger.warn("users_api_error: User cannot be created-" + user.getUsername());
       throw new InvalidSignupException("User cannot be created ");
     }
     if (savedUser != null) {
       String token = jwtUtil.generateToken(savedUser.getUsername());
       return new JwtResponse(token, savedUser.getUsername());
-
     }
+    logger.warn("users_api_error: User cannot be created-" + user.getUsername());
     throw new InvalidSignupException("User cannot be created");
   }
 
@@ -72,6 +81,7 @@ public class UserServiceImpl implements UserService {
       String token = jwtUtil.generateToken(foundUser.getUsername());
       return new JwtResponse(token, foundUser.getUsername());
     }
+    logger.warn("users_api_error: Email/Password invalid!" + user.getUsername());
     throw new LoginException("Email/Password invalid!");
   }
 
