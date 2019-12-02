@@ -11,6 +11,12 @@ public interface UserService //extends UserDetailsService
 {
   public Iterable<User> listUsers();
 
+  /**
+   *
+   * @param user Object
+   * @return jwtResponse
+   * @throws InvalidSignupException
+   */
   public JwtResponse createUser(User user) throws InvalidSignupException;
   public JwtResponse login(User user) throws LoginException;
 }

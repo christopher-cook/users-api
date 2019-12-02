@@ -18,6 +18,11 @@ public class UserController {
   @Autowired
   UserService userService;
 
+  /**
+   *
+   * @param userId String
+   * @return List of users
+   */
   @GetMapping("/list")
   public Iterable<User> listUsers(@RequestHeader("userId") String userId) {
     return userService.listUsers();
