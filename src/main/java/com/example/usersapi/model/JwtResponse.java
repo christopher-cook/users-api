@@ -6,6 +6,11 @@ public class JwtResponse {
 
   private String username;
 
+  /**
+   * used to construct jwtResponse
+   * @param jwt String
+   * @param username String
+   */
   public JwtResponse(String jwt, String username) {
     this.jwt = jwt;
     this.username = username;

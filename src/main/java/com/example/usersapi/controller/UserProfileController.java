@@ -16,6 +16,11 @@ public class UserProfileController {
         return userProfileService.createProfile(userId, userProfile);
     }
 
+    /**
+     *
+     * @param userId Long
+     * @return UserProfile 
+     */
     @GetMapping("/profile")
     public UserProfile getUserProfile(@RequestHeader("userId") Long userId){
         return userProfileService.getProfile(userId);

@@ -38,6 +38,12 @@ public class UserServiceImpl implements UserService {
     return userRepository.findAll();
   }
 
+  /**
+   *
+   * @param user Object
+   * @return jwtResponse
+   * @throws InvalidSignupException
+   */
   @Override
   public JwtResponse createUser(User user) throws InvalidSignupException {
     String username = user.getUsername();

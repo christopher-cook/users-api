@@ -10,7 +10,11 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
-
+    /**
+     *
+     * @param e
+     * @return errorResponse message from ResponseEntity caught
+     */
     @ExceptionHandler({LoginException.class, InvalidSignupException.class})
     public ResponseEntity<ErrorResponse> handleLoginExceptions(Exception e) {
         ErrorResponse errorResponse = new ErrorResponse(HttpStatus.INTERNAL_SERVER_ERROR,

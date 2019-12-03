@@ -11,10 +11,18 @@ public class ErrorResponse {
     private String message;
     private String timestamp;
 
+    /**
+     *
+     * @return HttpStatus
+     */
     public HttpStatus getHttpStatus() {
         return httpStatus;
     }
 
+    /**
+     *
+     * @param httpStatus
+     */
     public void setHttpStatus(HttpStatus httpStatus) {
         this.httpStatus = httpStatus;
     }

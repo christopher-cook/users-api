@@ -33,3 +33,6 @@ build/
 ### Logs ###
 users-api.log
 *.gz
+
+### Prop files ###
+*.properties

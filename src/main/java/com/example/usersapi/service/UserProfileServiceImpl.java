@@ -15,6 +15,12 @@ public class UserProfileServiceImpl implements UserProfileService {
     @Autowired
     UserRepository userRepository;
 
+    /**
+     *
+     * @param userId Long
+     * @param userProfile Object
+     * @return user profile
+     */
     @Override
     public UserProfile createProfile(Long userId, UserProfile userProfile) {
         User currentUser = userRepository.findById(userId).get();
