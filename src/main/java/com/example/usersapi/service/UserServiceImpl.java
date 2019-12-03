@@ -5,7 +5,9 @@ import com.example.usersapi.exception.InvalidSignupException;
 import com.example.usersapi.exception.LoginException;
 import com.example.usersapi.model.JwtResponse;
 import com.example.usersapi.model.User;
+import com.example.usersapi.model.UserRole;
 import com.example.usersapi.repository.UserRepository;
+import com.example.usersapi.repository.UserRoleRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,6 +27,9 @@ public class UserServiceImpl implements UserService {
 
   @Autowired
   JwtUtil jwtUtil;
+
+  @Autowired
+  UserRoleRepository userRoleRepository;
 
   Logger logger = LoggerFactory.getLogger(UserServiceImpl.class);
 
@@ -57,6 +62,14 @@ public class UserServiceImpl implements UserService {
       throw new InvalidSignupException("Email already exists");
     }
 
+    UserRole userRole = userRoleRepository.findByName("ROLE_USER");
+    if (userRole == null) {
+      UserRole newRole = new UserRole();
+      newRole.setName("ROLE_USER");
+      userRole = userRoleRepository.save(newRole);
+    }
+
+    user.addRole(userRole);
     user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
     User savedUser = null;
 
