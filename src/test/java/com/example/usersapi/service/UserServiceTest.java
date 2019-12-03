@@ -5,7 +5,9 @@ import com.example.usersapi.exception.InvalidSignupException;
 import com.example.usersapi.exception.LoginException;
 import com.example.usersapi.model.JwtResponse;
 import com.example.usersapi.model.User;
+import com.example.usersapi.model.UserRole;
 import com.example.usersapi.repository.UserRepository;
+import com.example.usersapi.repository.UserRoleRepository;
 import java.util.ArrayList;
 import java.util.List;
 import org.junit.Before;
@@ -39,6 +41,9 @@ public class UserServiceTest {
   @Mock
   private BCryptPasswordEncoder encoder;
 
+  @Mock
+  private UserRoleRepository userRoleRepository;
+
   private User user;
 
   @Before
@@ -52,10 +57,14 @@ public class UserServiceTest {
 
   @Test
   public void createUser_User_Success() throws InvalidSignupException {
+    UserRole testUserRole = new UserRole();
+    testUserRole.setName("ROLE_USER");
 
+    when(userRoleRepository.save(any())).thenReturn(testUserRole);
     when(userRepository.save(any())).thenReturn(user);
     when(encoder.encode(anyString())).thenReturn("123456");
     when(jwtUtil.generateToken(any())).thenReturn("123456");
+
 
     JwtResponse jwtResponse = userService.createUser(user);
 
@@ -64,12 +73,15 @@ public class UserServiceTest {
 
   @Test(expected = InvalidSignupException.class)
   public void createUser_User_Fail() throws InvalidSignupException {
+    UserRole testUserRole = new UserRole();
+    testUserRole.setName("ROLE_USER");
+
+    when(userRoleRepository.save(any())).thenReturn(testUserRole);
     userService.createUser(user);
   }
 
   @Test
   public void loginUser_User_Success() throws LoginException {
-
     when(userRepository.login(anyString())).thenReturn(user);
     when(encoder.matches(any(), any())).thenReturn(true);
     when(jwtUtil.generateToken(any())).thenReturn("123456");
